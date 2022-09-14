@@ -36,4 +36,4 @@ steps:
       artifactFeed: cda-dat-libraries/cda-dat-ml-pypi/
 
   - script: |
-      make PYPIRC_PATH=$(PYPIRC_PATH) FEED_NAME=cda-dat-ml-pypi package-upload-on-azure
+      make PYPIRC_PATH=$(PYPIRC_PATH) FEED_NAME=cda-dat-ml-pypi release
