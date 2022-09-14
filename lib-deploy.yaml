@@ -36,4 +36,8 @@ steps:
       artifactFeed: cda-dat-libraries/cda-dat-ml-pypi/
 
   - script: |
+      pip install wheel twine keyring artifacts-keyring
+    displayName: "Requirements for package upload"
+
+  - script: |
       make PYPIRC_PATH=$(PYPIRC_PATH) FEED_NAME=cda-dat-ml-pypi release
