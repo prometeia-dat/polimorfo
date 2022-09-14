@@ -689,6 +689,7 @@ class CocoDataset:
     def get_segmentation_mask(
         self,
         img_idx: int,
+        foreground_panels_idx: List[int] = [59, 60, 61, 62],
         cats_idx: List[int] = None,
         remapping_dict: Dict[int, int] = None,
         min_conf: float = 0.5,
@@ -697,6 +698,7 @@ class CocoDataset:
 
         Args:
             img_idx (int): [the id of the image]
+            foreground_panels_idx (List[int]): the list of panel's idx to be added at the end, since they are always in foreground
             cats_idx (List[int], optional): [an optional filter over the classes]. Defaults to None.
             remapping_dict (Dict[int, int], optional): [description]. Defaults to None.
             min_conf (float): the min confidence to generate the segment, segments with conf below the threshold are replaced as 255
@@ -728,7 +730,7 @@ class CocoDataset:
                     }
                 )
             # order the mask by area
-            elements = sorted(elements, key=lambda x: x["area"], reverse=True)
+            elements = sorted(elements, key=lambda x: (x["id"] not in foreground_panels_idx, x["area"]), reverse=True)
             for elem in elements:
                 if elem["score"] < min_conf:
                     continue
