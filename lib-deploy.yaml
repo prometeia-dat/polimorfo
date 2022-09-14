@@ -1,0 +1,39 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+name: polimorfo-lib-build-publish
+pr: none
+trigger:
+  tags:
+    include:
+      - "v*"
+
+pool:
+  vmImage: "ubuntu-latest"
+strategy:
+  matrix:
+    Python38:
+      python.version: "3.8"
+    Python39:
+      python.version: "3.9"
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "$(python.version)"
+    displayName: "Use Python $(python.version)"
+
+  - task: TwineAuthenticate@1
+    displayName: "Authenticate with Twine"
+    inputs:
+      artifactFeed: cda-dat-libraries/cda-dat-ml-pypi/
+
+  - script: |
+      make PYPIRC_PATH=$(PYPIRC_PATH) FEED_NAME=cda-dat-ml-pypi package-upload-on-azure
