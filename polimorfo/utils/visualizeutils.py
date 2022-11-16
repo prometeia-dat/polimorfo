@@ -97,6 +97,7 @@ def draw_instances(
     show_boxes: bool = False,
     show_masks: bool = True,
     min_score: float = 0.5,
+    max_score: float = 1.0,
     min_area: int = 0,
     colors: List = None,
     ax: plt.Axes = None,
@@ -175,7 +176,7 @@ def draw_instances(
 
         label_name = labels_names[idx]
         score = scores[idx]
-        if score < min_score:
+        if score < min_score or score > max_score:
             continue
 
         if show_masks:
