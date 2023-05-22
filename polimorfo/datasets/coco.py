@@ -745,6 +745,50 @@ class CocoDataset:
         avg_score = score / count if count else count
         return target, avg_score
 
+    def get_instances(
+        self,
+        img_idx: int,
+        cats_idx: List[int] = None,
+        remapping_dict: Dict[int, int] = None,
+        min_conf: float = 0.5,
+    ) -> Tuple[np.ndarray, float]:
+        """get instance masks for multilabel task with shape [C, H, W]
+
+        Args:
+            img_idx (int): [description]
+            cats_idx (List[int], optional): [description]. Defaults to None.
+            remapping_dict (Dict[int, int], optional): [description]. Defaults to None.
+            min_conf (float, optional): [description]. Defaults to 0.5.
+
+        Returns:
+            Tuple[np.ndarray, np.array]: - an array with shape [num_instances, H, W] containing binary instance masks
+                                         - an array with shape [num_instances] containing class labels for each instance
+        """
+        img_meta = self.imgs[img_idx]
+        height, width = img_meta["height"], img_meta["width"]
+        anns = self.get_annotations(img_idx, cats_idx)
+        mask_labels = []
+        class_labels = []
+
+        for ann in anns:
+            # fiter by score
+            score = ann["score"] if "score" in ann else 1.0
+            if score < min_conf:
+                continue
+
+            cat_idx = ann["category_id"]
+            if remapping_dict is not None and cat_idx in remapping_dict:
+                cat_idx = remapping_dict[cat_idx]
+            instance_mask = maskutils.coco_poygons_to_mask([
+                ann["segmentation"]], 
+                height, 
+                width
+                ).squeeze(0).astype(np.uint8)
+            mask_labels.append(instance_mask)
+            class_labels.append(cat_idx-1)
+            
+        return np.stack(mask_labels, axis=-1), np.array(class_labels).astype(np.uint8)
+
     def load_image(self, idx):
         """load an image from the idx
 
