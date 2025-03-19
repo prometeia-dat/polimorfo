@@ -352,7 +352,7 @@ def draw_segmentation(
         text_pos = np.median(bool_mask.nonzero(), axis=1)[::-1] - 20
         lighter_color = change_color_brightness(color, brightness_factor=0.7)
         font_size = 10
-        draw_text(ax, name, text_pos, font_size, horizontal_alignment="left")
+        draw_text(ax, name, text_pos, font_size, lighter_color, horizontal_alignment="left")
 
         padded_mask = np.zeros(
             (bool_mask.shape[0] + 2, bool_mask.shape[1] + 2), dtype=np.uint8
