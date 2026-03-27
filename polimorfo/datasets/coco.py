@@ -786,6 +786,9 @@ class CocoDataset:
                 ).squeeze(0).astype(np.uint8)
             mask_labels.append(instance_mask)
             class_labels.append(cat_idx-1)
+
+        if len(mask_labels) == 0:
+            return np.zeros((0, height, width), dtype=np.uint8), np.array([], dtype=np.uint8)
             
         return np.stack(mask_labels, axis=-1), np.array(class_labels).astype(np.uint8)
 
