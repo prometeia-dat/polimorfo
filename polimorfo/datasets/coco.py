@@ -761,7 +761,7 @@ class CocoDataset:
             min_conf (float, optional): [description]. Defaults to 0.5.
 
         Returns:
-            Tuple[np.ndarray, np.array]: - an array with shape [num_instances, H, W] containing binary instance masks
+            Tuple[np.ndarray, np.array]: - an array with shape [H, W, num_instances] containing binary instance masks
                                          - an array with shape [num_instances] containing class labels for each instance
         """
         img_meta = self.imgs[img_idx]
@@ -788,7 +788,7 @@ class CocoDataset:
             class_labels.append(cat_idx-1)
 
         if len(mask_labels) == 0:
-            return np.zeros((0, height, width), dtype=np.uint8), np.array([], dtype=np.uint8)
+            return np.zeros((height, width, 0), dtype=np.uint8), np.array([], dtype=np.uint8)
             
         return np.stack(mask_labels, axis=-1), np.array(class_labels).astype(np.uint8)
 
