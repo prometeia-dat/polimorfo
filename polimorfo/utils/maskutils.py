@@ -42,7 +42,7 @@ def mask_to_polygon(
         else:
             approx_poly = cnt
         # we need to draw a least a box
-        if len(approx_poly) >= 4:
+        if len(approx_poly) >= 3:
             approx_flattened = approx_poly.flatten().tolist()
             polygons.append(approx_flattened)
     return polygons
@@ -59,7 +59,7 @@ def polygons_to_mask(polygons, height, width):
     Returns:
         [type]: a mask of format num_classes, heigth, width
     """
-    polygons = [polygon for polygon in polygons if len(polygon) >= 8]
+    polygons = [polygon for polygon in polygons if len(polygon) >= 6]
 
     if len(polygons) == 0:
         return np.zeros((height, width), np.uint8)
