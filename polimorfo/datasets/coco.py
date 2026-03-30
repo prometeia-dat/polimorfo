@@ -11,7 +11,7 @@ from typing import DefaultDict, Dict, List, Set, Tuple, Union
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 from tqdm.auto import tqdm
 
 from ..utils import maskutils, visualizeutils
@@ -792,7 +792,7 @@ class CocoDataset:
             
         return np.stack(mask_labels, axis=-1), np.array(class_labels).astype(np.uint8)
 
-    def load_image(self, idx):
+    def load_image(self, idx, exif_transpose=True):
         """load an image from the idx
 
         Args:
@@ -803,8 +803,11 @@ class CocoDataset:
         """
 
         path = self.__image_folder / self.imgs[idx]["file_name"]
-        return Image.open(path)
-
+        img =  Image.open(path)
+        if exif_transpose:
+            img = ImageOps.exif_transpose(img)
+        return img
+    
     def mean_pixels(self, sample: int = 1000) -> List[float]:
         """compute the mean of the pixels
 
